@@ -17,12 +17,14 @@ public class SanjiControllerScript : MonoBehaviour {
 	Camera mainCamera;
 	GameObject player;
 	float sum = 0;
+	GameObject ground;
 
 	// Use this for initialization
 	void Start () {
 		anim = GetComponent<Animator> (); // get animator
 		mainCamera = Camera.main;
 		player = GameObject.Find ("Character");
+		ground = GameObject.Find ("MainGround");
 	}
 	
 	void Update() {
@@ -31,6 +33,7 @@ public class SanjiControllerScript : MonoBehaviour {
 		oldX = player.transform.position.x;
 
 		if (isGrounded && Input.GetButtonDown ("Jump")) {
+			ground.SetActive(false); // ground dissapears on jump
 			anim.SetBool ("IsGrounded", false);
 			rigidbody2D.AddForce (new Vector2 (0, jumpForce));
 		}
