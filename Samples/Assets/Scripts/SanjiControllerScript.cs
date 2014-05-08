@@ -16,7 +16,6 @@ public class SanjiControllerScript : MonoBehaviour {
 	Animator anim;
 	Camera mainCamera;
 	GameObject player;
-	float sum = 0;
 	GameObject ground;
 
 	// Use this for initialization
