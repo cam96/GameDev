@@ -6,8 +6,19 @@ using UnityEditor;
 public class MainCharacter : MonoBehaviour
 {
 	public float horizontalMovementSpeed = 3f;
-	public const float walkingMovementSpeed = 3f; // walking
-	public const float runningMovementSpeed = 10f; // running
+	public float walkingMovementSpeed = 3f; // walking
+	public float runningMovementSpeed = 10f; // running
+	public float increaseSpeedBy = 0.05f;
+
+	public float jumpForce = 100f;
+	public int jumpForceCount = 0;
+	public int maxJumpForceCount = 5;
+	public bool isJumping = false;
+
+	public bool isCharOnGround = false;	
+	public Transform checkForGround;
+	public float groundCircleColliderRadius = 0.2f;
+	public LayerMask layersThatAreGround;
 
 	private int previousTime;
 	private Point lastLocation;
@@ -25,18 +36,45 @@ public class MainCharacter : MonoBehaviour
 
 	public void Update ()
 	{
+		JumpHeightBasedOnHoldingDownJumpButton ();
 		CameraController.UpdateCameraToFollowGameObject (playerGameObject.GameObject, lastLocation, mainCamera);
 		UpdateCharsLastLocation();
 	}
 	
 	public void FixedUpdate () {
+		UpdatePlayerStateIsOnGround ();
+		MovePlayerObjectBasedOnHorizontalMovement ();
+	}
+
+	private void UpdatePlayerStateIsOnGround() {
+		isCharOnGround = Physics2D.OverlapCircle (checkForGround.position, groundCircleColliderRadius, layersThatAreGround);
+		animator.SetBool ("IsCharOnGround", isCharOnGround);
+	}
+
+	private void MovePlayerObjectBasedOnHorizontalMovement() {
 		float horizontalMovement = Input.GetAxis ("Horizontal");
-		GetHorizontalMovementSpeed (horizontalMovement);
+		UpdateHorizontalMovementSpeed (horizontalMovement);
 		MovementController.MoveObjectHorizontally (playerGameObject, horizontalMovement, horizontalMovementSpeed);
 		animator.SetFloat ("Speed", Mathf.Abs (Input.GetAxis ("Horizontal")));
 	}
 
-	private float GetHorizontalMovementSpeed(float horizontalMovement) {
+	private void JumpHeightBasedOnHoldingDownJumpButton() {
+		if (Input.GetButtonUp("Jump")) {
+			isJumping = false;
+			jumpForceCount = 0;
+		}
+		else if (Input.GetButtonDown ("Jump") && isCharOnGround) {
+			isJumping = true;
+		}
+		else if (Input.GetButton ("Jump") && isJumping) {
+			if (jumpForceCount < maxJumpForceCount) {
+				jumpForceCount++;
+				rigidbody2D.AddForce (new Vector2 (0, jumpForce));
+			}
+		}
+	}
+
+	private float UpdateHorizontalMovementSpeed(float horizontalMovement) {
 		if (Input.GetButton ("Fire1")) {
 			if (IsCharChangingHorizontalDirection(horizontalMovement)) {
 				animator.SetBool("IsRunning", false);
@@ -44,7 +82,7 @@ public class MainCharacter : MonoBehaviour
 			}
 			else if (horizontalMovementSpeed < runningMovementSpeed) {
 				animator.SetBool("IsRunning", true);
-				horizontalMovementSpeed += 0.05f;
+				horizontalMovementSpeed += increaseSpeedBy;
 			}
 		} 
 		else {
