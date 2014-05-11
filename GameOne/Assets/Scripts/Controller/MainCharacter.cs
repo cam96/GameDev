@@ -1,10 +1,15 @@
 using UnityEngine;
+using System;
 using System.Collections;
+using UnityEditor;
 
 public class MainCharacter : MonoBehaviour
 {
-	public float horizontalMovementSpeed = 15f;
+	public float horizontalMovementSpeed = 3f;
+	public const float walkingMovementSpeed = 3f; // walking
+	public const float runningMovementSpeed = 10f; // running
 
+	private int previousTime;
 	private Point lastLocation;
 	private MovableObject playerGameObject;
 	private Camera mainCamera;
@@ -25,8 +30,34 @@ public class MainCharacter : MonoBehaviour
 	}
 	
 	public void FixedUpdate () {
-		MovementController.MoveObjectHorizontally (playerGameObject, Input.GetAxis ("Horizontal"), horizontalMovementSpeed);
+		float horizontalMovement = Input.GetAxis ("Horizontal");
+		GetHorizontalMovementSpeed (horizontalMovement);
+		MovementController.MoveObjectHorizontally (playerGameObject, horizontalMovement, horizontalMovementSpeed);
 		animator.SetFloat ("Speed", Mathf.Abs (Input.GetAxis ("Horizontal")));
+	}
+
+	private float GetHorizontalMovementSpeed(float horizontalMovement) {
+		if (Input.GetButton ("Fire1")) {
+			if (IsCharChangingHorizontalDirection(horizontalMovement)) {
+				animator.SetBool("IsRunning", false);
+				horizontalMovementSpeed = walkingMovementSpeed; // changed directions
+			}
+			else if (horizontalMovementSpeed < runningMovementSpeed) {
+				animator.SetBool("IsRunning", true);
+				horizontalMovementSpeed += 0.05f;
+			}
+		} 
+		else {
+			horizontalMovementSpeed = walkingMovementSpeed;
+			animator.SetBool("IsRunning", false);
+		}
+
+		return horizontalMovementSpeed;
+	}
+
+	private bool IsCharChangingHorizontalDirection(float horizontalMovement) {
+		return (playerGameObject.IsFacingRight && horizontalMovement < 0) ||
+			(!playerGameObject.IsFacingRight && horizontalMovement > 0);
 	}
 
 	private void UpdateCharsLastLocation() {

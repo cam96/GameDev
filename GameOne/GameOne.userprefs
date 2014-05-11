@@ -1,23 +1,22 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Editor\Model\TestPoint.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Editor\Controller\TestMainCharacterController.cs">
     <Files>
-      <File FileName="Assets\Scripts\Model\MovableObject.cs" Line="18" Column="4" />
-      <File FileName="Assets\Editor\Model\TestPoint.cs" Line="25" Column="1" />
-      <File FileName="Assets\Editor\Model\TestMovableObject.cs" Line="3" Column="1" />
+      <File FileName="Assets\Editor\Controller\TestMainCharacterController.cs" Line="19" Column="3" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="Assembly-CSharp" expanded="True">
-            <Node name="References" expanded="True" />
-            <Node name="Editor" expanded="True">
-              <Node name="Model" expanded="True">
-                <Node name="TestPoint.cs" selected="True" />
-              </Node>
-            </Node>
             <Node name="Scripts" expanded="True">
-              <Node name="Controller" expanded="True" />
+              <Node name="Model" expanded="True" />
+            </Node>
+          </Node>
+          <Node name="Assembly-CSharp-Editor" expanded="True">
+            <Node name="Editor" expanded="True">
+              <Node name="Controller" expanded="True">
+                <Node name="TestMainCharacterController.cs" selected="True" />
+              </Node>
               <Node name="Model" expanded="True" />
             </Node>
           </Node>
