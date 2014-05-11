@@ -20,6 +20,8 @@ public class MainCharacter : MonoBehaviour
 	public float groundCircleColliderRadius = 0.2f;
 	public LayerMask layersThatAreGround;
 
+	private bool isCrouching = false;
+
 	private int previousTime;
 	private Point lastLocation;
 	private MovableObject playerGameObject;
@@ -36,6 +38,7 @@ public class MainCharacter : MonoBehaviour
 
 	public void Update ()
 	{
+		Crouch ();
 		JumpHeightBasedOnHoldingDownJumpButton ();
 		CameraController.UpdateCameraToFollowGameObject (playerGameObject.GameObject, lastLocation, mainCamera);
 		UpdateCharsLastLocation();
@@ -46,6 +49,24 @@ public class MainCharacter : MonoBehaviour
 		MovePlayerObjectBasedOnHorizontalMovement ();
 	}
 
+	private void Crouch() {
+		Vector3 playerSize = playerGameObject.GameObject.renderer.bounds.size;
+		if (Input.GetButtonDown ("Crouch")) {
+			isCrouching = !isCrouching;
+			animator.SetBool("IsCrouched", isCrouching);
+			UpdateBoxCollider2DSize (playerGameObject.GameObject, playerSize.x, playerSize.y / 2);
+		}
+
+		if (!isCrouching) {
+			UpdateBoxCollider2DSize (playerGameObject.GameObject, playerSize.x, playerSize.y);
+		}
+	}
+
+	private void UpdateBoxCollider2DSize(GameObject gameObject, float x, float y) {
+		BoxCollider2D boxCollider2D = playerGameObject.GameObject.GetComponent<BoxCollider2D>();
+		boxCollider2D.size = new Vector2 (x, y);
+	}
+	
 	private void UpdatePlayerStateIsOnGround() {
 		isCharOnGround = Physics2D.OverlapCircle (checkForGround.position, groundCircleColliderRadius, layersThatAreGround);
 		animator.SetBool ("IsCharOnGround", isCharOnGround);
@@ -66,7 +87,7 @@ public class MainCharacter : MonoBehaviour
 		else if (Input.GetButtonDown ("Jump") && isCharOnGround) {
 			isJumping = true;
 		}
-		else if (Input.GetButton ("Jump") && isJumping) {
+		else if (Input.GetButton ("Jump") && isJumping && !isCrouching) {
 			if (jumpForceCount < maxJumpForceCount) {
 				jumpForceCount++;
 				rigidbody2D.AddForce (new Vector2 (0, jumpForce));
