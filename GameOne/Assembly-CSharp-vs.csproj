@@ -47,9 +47,12 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\Controller\CameraController.cs" />
-     <Compile Include="Assets\Scripts\Controller\MainCharacter.cs" />
+     <Compile Include="Assets\Scripts\Controller\Main Character\MainCharMovementController.cs" />
+     <Compile Include="Assets\Scripts\Controller\Main Character\MainCharacter.cs" />
      <Compile Include="Assets\Scripts\Controller\MovementController.cs" />
-     <Compile Include="Assets\Scripts\Model\MovableObject.cs" />
+     <Compile Include="Assets\Scripts\Model\Character Actions\JumpingObject.cs" />
+     <Compile Include="Assets\Scripts\Model\Character Actions\MovableObject.cs" />
+     <Compile Include="Assets\Scripts\Model\Character.cs" />
      <Compile Include="Assets\Scripts\Model\Point.cs" />
      <Compile Include="Assets\UnityTestTools\Assertions\AssertionComponent.cs" />
      <Compile Include="Assets\UnityTestTools\Assertions\AssertionException.cs" />

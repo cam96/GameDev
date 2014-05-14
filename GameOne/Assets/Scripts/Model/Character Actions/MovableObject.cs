@@ -5,6 +5,7 @@ public class MovableObject
 {
 	private bool _isFacingRight;
 	private GameObject _gameObject;
+	public float horizontalMovementSpeed = 3f;
 
 	public MovableObject(GameObject gameObject, bool isFacingRight) {
 		this._gameObject = gameObject;
