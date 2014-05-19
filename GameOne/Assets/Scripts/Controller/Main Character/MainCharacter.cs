@@ -143,12 +143,15 @@ public class MainCharacter : MonoBehaviour
 	}
 
 	private float UpdateHorizontalMovementSpeed(float horizontalMovement) {
-		if (Input.GetButton ("Fire1")) {
+		if (horizontalMovement == 0) {
+			horizontalMovementSpeed = walkingMovementSpeed;
+		}
+		else if (Input.GetButton ("Fire1")) {
 			if (IsCharChangingHorizontalDirection(horizontalMovement)) {
 				animator.SetBool("IsRunning", false);
 				horizontalMovementSpeed = walkingMovementSpeed; // changed directions
 			}
-			else if (horizontalMovementSpeed < runningMovementSpeed) {
+			else if (horizontalMovementSpeed < runningMovementSpeed && horizontalMovement != 0) {
 				animator.SetBool("IsRunning", true);
 				horizontalMovementSpeed += increaseSpeedBy;
 			}
