@@ -21,31 +21,79 @@ public class MainCharacter : MonoBehaviour
 	public LayerMask layersThatAreGround;
 
 	private bool isCrouching = false;
+	private bool isBackstep = false;
+
+	public float backStepDiagonalForce = 500.0f;
 	
 	private Point lastLocation;
 	private MovableObject playerGameObject;
 	private Camera mainCamera;
 	private Animator animator;
 
+	private CustomAnimation backStepAnimation;
+
+	public float startTime = 0.0f;
+	public float cumultiveTime = 0.0f;
+
+	public Vector2 charVelocity = new Vector2 (0.0f, 0.0f);
+
 	public void Start ()
 	{
 		playerGameObject = new MovableObject (GameObject.Find ("Megaman"), true);
 		animator = GetComponent<Animator> ();
 		mainCamera = Camera.main;
+		backStepAnimation = new CustomAnimation ("Base Layer.Megaman Backstep", 0.0f, 1.0f, animator);
 		UpdateCharsLastLocation();
 	}
 
 	public void Update ()
 	{
-		Crouch ();
-		JumpHeightBasedOnHoldingDownJumpButton ();
+		if (!isBackstep) {
+			StartCoroutine ("Backstep");
+			Crouch ();
+			JumpHeightBasedOnHoldingDownJumpButton ();
+		}
+
 		CameraController.UpdateCameraToFollowGameObject (playerGameObject.GameObject, lastLocation, mainCamera);
-		UpdateCharsLastLocation();
+		UpdateCharsLastLocation ();
 	}
-	
+
 	public void FixedUpdate () {
 		UpdatePlayerStateIsOnGround ();
-		MovePlayerObjectBasedOnHorizontalMovement ();
+
+		if (!isBackstep) {
+			MovePlayerObjectBasedOnHorizontalMovement ();
+		}
+	}
+
+	private void IsPlayerStandingStill() {
+		charVelocity = rigidbody2D.velocity;
+
+		if (charVelocity.x == 0 && charVelocity.y == 0) {
+			animator.SetTrigger ("IdleTrigger");
+		}
+	}
+
+	private IEnumerator Backstep() {
+		if (Input.GetButtonDown ("Backstep") && isCharOnGround) {
+			isBackstep = true;
+			Vector2 diagonalVector;
+
+			if (playerGameObject.IsFacingRight)
+				diagonalVector = new Vector2(-1.0f, 1.0f);
+			else
+				diagonalVector = new Vector2(1.0f, 1.0f);
+
+			rigidbody2D.AddForce (diagonalVector.normalized * backStepDiagonalForce);
+
+			animator.SetTrigger("BackstepTrigger");
+			animator.SetBool ("IsBackstep", isBackstep);
+
+			yield return backStepAnimation.WaitForAnimationToFinish();
+
+			isBackstep = false;
+			animator.SetBool ("IsBackstep", isBackstep);
+		}
 	}
 
 	private void Crouch() {
