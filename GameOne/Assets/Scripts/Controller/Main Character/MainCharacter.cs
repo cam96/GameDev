@@ -15,14 +15,13 @@ public class MainCharacter : MonoBehaviour
 	public int maxJumpForceCount = 5;
 	public bool isJumping = false;
 
-	public bool isCharOnGround = false;	
+	public bool isCharOnGround = false;
 	public Transform checkForGround;
 	public float groundCircleColliderRadius = 0.2f;
 	public LayerMask layersThatAreGround;
 
 	private bool isCrouching = false;
-
-	private int previousTime;
+	
 	private Point lastLocation;
 	private MovableObject playerGameObject;
 	private Camera mainCamera;

@@ -1,18 +1,19 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Controller\MainCharacter.cs">
-    <Files>
-      <File FileName="Assets\Scripts\Controller\MainCharacter.cs" Line="64" Column="2" />
-    </Files>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="Assembly-CSharp" expanded="True">
             <Node name="Scripts" expanded="True">
               <Node name="Controller" expanded="True">
-                <Node name="MainCharacter.cs" selected="True" />
+                <Node name="Main Character" expanded="True">
+                  <Node name="MainCharMovementController.cs" selected="True" />
+                </Node>
               </Node>
-              <Node name="Model" expanded="True" />
+              <Node name="Model" expanded="True">
+                <Node name="Character Actions" expanded="True" />
+              </Node>
             </Node>
           </Node>
           <Node name="Assembly-CSharp-Editor" expanded="True">
