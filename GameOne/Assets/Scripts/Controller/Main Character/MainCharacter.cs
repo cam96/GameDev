@@ -20,6 +20,12 @@ public class MainCharacter : MonoBehaviour
 	public float groundCircleColliderRadius = 0.2f;
 	public LayerMask layersThatAreGround;
 
+	public bool isCharTouchingLedge = false;
+	public bool isUserPressingLedgeGrab = false;
+	public Transform checkForCharTouchingLedge;
+	public float ledgeCircleColliderRadius = 0.2f;
+	public LayerMask layersThatAreLedges;
+
 	private bool isCrouching = false;
 	private bool isBackstep = false;
 
@@ -34,7 +40,6 @@ public class MainCharacter : MonoBehaviour
 
 	public float startTime = 0.0f;
 	public float cumultiveTime = 0.0f;
-
 	public Vector2 charVelocity = new Vector2 (0.0f, 0.0f);
 
 	public void Start ()
@@ -46,20 +51,23 @@ public class MainCharacter : MonoBehaviour
 		UpdateCharsLastLocation();
 	}
 
+	// get input, set trigger
 	public void Update ()
 	{
-		if (!isBackstep) {
-			StartCoroutine ("Backstep");
-			Crouch ();
+		//if (!isBackstep) {
+			//StartCoroutine ("Backstep");
+			//Crouch ();
 			JumpHeightBasedOnHoldingDownJumpButton ();
-		}
+		//}
 
 		CameraController.UpdateCameraToFollowGameObject (playerGameObject.GameObject, lastLocation, mainCamera);
 		UpdateCharsLastLocation ();
 	}
 
+	// perform action if trigger is set
 	public void FixedUpdate () {
 		UpdatePlayerStateIsOnGround ();
+		Physics2D.IgnoreLayerCollision (LayerMask.NameToLayer ("Player"), LayerMask.NameToLayer ("OneWayPlatform"), rigidbody2D.velocity.y > 0);
 
 		if (!isBackstep) {
 			MovePlayerObjectBasedOnHorizontalMovement ();
@@ -77,6 +85,7 @@ public class MainCharacter : MonoBehaviour
 	private IEnumerator Backstep() {
 		if (Input.GetButtonDown ("Backstep") && isCharOnGround) {
 			isBackstep = true;
+			isCharOnGround = false;
 			Vector2 diagonalVector;
 
 			if (playerGameObject.IsFacingRight)
@@ -115,8 +124,13 @@ public class MainCharacter : MonoBehaviour
 	}
 	
 	private void UpdatePlayerStateIsOnGround() {
-		isCharOnGround = Physics2D.OverlapCircle (checkForGround.position, groundCircleColliderRadius, layersThatAreGround);
-		animator.SetBool ("IsCharOnGround", isCharOnGround);
+		if (!isJumping && !isBackstep) {
+			isCharOnGround = Physics2D.OverlapCircle (checkForGround.position, groundCircleColliderRadius, layersThatAreGround);
+			animator.SetBool ("IsCharOnGround", isCharOnGround);
+		}
+		else {
+			isCharOnGround = false;
+		}
 	}
 
 	private void MovePlayerObjectBasedOnHorizontalMovement() {
@@ -133,6 +147,7 @@ public class MainCharacter : MonoBehaviour
 		}
 		else if (Input.GetButtonDown ("Jump") && isCharOnGround) {
 			isJumping = true;
+			isCharOnGround = false;
 		}
 		else if (Input.GetButton ("Jump") && isJumping && !isCrouching) {
 			if (jumpForceCount < maxJumpForceCount) {
